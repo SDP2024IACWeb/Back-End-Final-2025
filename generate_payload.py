@@ -363,48 +363,6 @@ def get_top_recommendations():
     except Exception as e:
         return jsonify({"error": str(e), "trace": str(traceback.format_exc())}), 500
 
-@app.route('/all')
-def get_all_data():
-    try:
-        # Load NAICS hierarchy
-        with open(NAICS_DB, 'r') as f:
-            naics_data = json.load(f)
-
-        with open(ARC_DB, 'r') as f:
-            arc_data = json.load(f)
-        
-        formatted_results = generate_entire_payload(arc_data, naics_data)
-        
-        return jsonify(formatted_results)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/preview', methods=['GET'])
-def preview_data():
-    """
-    Quick‐look endpoint: loads just the first 20 recommendations
-    so you can open it in your browser without choking.
-    """
-    try:
-        # load hierarchies
-        with open(NAICS_DB, 'r') as f:
-            naics_data = json.load(f)
-        with open(ARC_DB, 'r') as f:
-            arc_data = json.load(f)
-
-        # grab everything, then slice
-        all_data = generate_entire_payload(arc_data, naics_data)
-        sample = all_data[:20]
-
-        return jsonify(sample), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-import re
-
 @app.route("/aggregates", methods=["GET"])
 def get_aggregates_by_arc():
     try:
